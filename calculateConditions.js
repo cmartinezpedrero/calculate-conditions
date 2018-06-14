@@ -167,8 +167,9 @@ function evaluateCondition(user, condition) {
 		return;
 	}
 
-	return result;
+	return { isActive: Boolean(result) };
 }
+
 
 
 function calculate(user, featureConditions) {
@@ -176,16 +177,13 @@ function calculate(user, featureConditions) {
 		const condition = featureConditions.values[i];
 		const aux = evaluateCondition(user, condition);
 
-		if (aux) {
+		if (aux !== undefined) {
 			return aux;
 		}
 	}
 }
 
-
-
-function calculateConditions(headers, values) {
-	const user = createUser(headers);
+function calculateConditions(user, values) {
 
 	return calculate(user, values);
 }
