@@ -170,12 +170,10 @@ function evaluateCondition(user, condition) {
 	return { isActive: Boolean(result) };
 }
 
-
-
 function calculate(user, featureConditions) {
-	for (let i = 0, l = featureConditions.values.length; i < l; i++) {
-		const condition = featureConditions.values[i];
-		const aux = evaluateCondition(user, condition);
+	for (let i = 0, l = featureConditions.length; i < l; i++) {
+		const conditions = featureConditions[i];
+		const aux = evaluateCondition(user, conditions);
 
 		if (aux !== undefined) {
 			return aux;

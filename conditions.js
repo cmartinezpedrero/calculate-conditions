@@ -129,6 +129,14 @@ function endDateTime(user, endTime) {
 	return false;
 }
 
+function isModel(user, model) {
+	if (user !== null && user.model !== null && user.model !== undefined
+		&& model !== null && model !== undefined) {
+		return model.toUpperCase().includes(user.model.toUpperCase());
+	}
+	return false;
+}
+
 module.exports = {
 	minAppVersion, maxAppVersion,
 	minOsVersion, maxOsVersion,
@@ -136,6 +144,7 @@ module.exports = {
 	isEnvironment,
 	isEmployee,
 	isLang,
+	isModel,
 	beginDateTime,
 	endDateTime };
 
