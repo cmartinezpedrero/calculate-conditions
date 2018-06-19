@@ -1,145 +1,5 @@
 const conditionsFunctions = require('./conditions');
 
-const UID_USERAGENT_POSITION = 0;
-const PLATFORM_USERAGENT_POSITION = 1;
-const BRAND_USERAGENT_POSITION = 2;
-const MODEL_USERAGENT_POSITION = 3;
-const RESOLUTION_USERAGENT_POSITION = 4;
-const OS_USERAGENT_POSITION = 5;
-const OSVERSION_USERAGENT_POSITION = 6;
-const APP_USERAGENT_POSITION = 7;
-const APPVERSION_USERAGENT_POSITION = 8;
-const SCREEN_USERAGENT_POSITION = 9;
-const WEBVIEW_USERAGENT_POSITION = 10;
-
-const REFERER_DOMAIN_POSITION = 2;
-const REFERER_APP_POSITION = 5;
-const REFERER_APP_PATH_POSITION = 3;
-const REFERER_WOODY_PATH_POSITION = 5;
-const REFERER_TABLET_PATH_POSITION = 4;
-
-const HEADER_USERAGENT = 'user-agent';
-const HEADER_CONTENT_LANGUAGE = 'content-language';
-const HEADER_REFERER = 'referer';
-
-function setUserAgentProperties(userAgent) {
-	let body_base;
-	let user;
-
-	if (userAgent) {
-		body_base = userAgent.split(';');
-		user = {
-		// UserAgent properties
-			uid : body_base[UID_USERAGENT_POSITION],
-			platform : body_base[PLATFORM_USERAGENT_POSITION],
-			brand : body_base[BRAND_USERAGENT_POSITION],
-			model : body_base[MODEL_USERAGENT_POSITION],
-			resolution : body_base[RESOLUTION_USERAGENT_POSITION],
-			os : body_base[OS_USERAGENT_POSITION],
-			osVersion : body_base[OSVERSION_USERAGENT_POSITION],
-			app : body_base[APP_USERAGENT_POSITION],
-			appVersion : body_base[APPVERSION_USERAGENT_POSITION],
-			screenDensity : body_base[SCREEN_USERAGENT_POSITION],
-			webviewVersion : body_base[WEBVIEW_USERAGENT_POSITION]
-		};
-	}
-	return user;
-}
-
-function setSessionProperties(body, user = {}) {
-	if (body.user) {
-		// Session properties
-		if (body.user.id) {
-			user.id = body.user.id;
-		}
-		if (body.user.isEmployee) {
-			user.isEmployee = body.user.isEmployee;
-		}
-	}
-	return user;
-}
-
-function refererDescompose(referer) {
-	let refererOut;
-	const res = referer.split('/');
-
-	if (res[REFERER_DOMAIN_POSITION] === 'movil.bbva.es') {
-		refererOut = {
-			domain : res[REFERER_DOMAIN_POSITION],
-			env : 'pr',
-			path : res[3],
-			app : res[4]
-		};
-	} else if (res[REFERER_DOMAIN_POSITION] === 'beta.movil.bbva.es') {
-		refererOut = {
-			domain : res[REFERER_DOMAIN_POSITION],
-			env : 'beta',
-			path : res[3],
-			app : res [4]
-
-		};
-	} else {
-		refererOut = {
-			domain : res[REFERER_DOMAIN_POSITION],
-			env : res[3],
-			branch : res [4],
-			path : res[5],
-			app : res [6]
-		};
-	}
-	return refererOut;
-}
-
-function setEnvProperties(headers, user = {}) {
-	const referer = refererDescompose(headers[HEADER_REFERER]);
-
-	if (referer) {
-		user.referer = referer;
-	}
-	if (headers[HEADER_CONTENT_LANGUAGE]) {
-		// Env properties
-		user.lang = headers[HEADER_CONTENT_LANGUAGE];
-	}
-	return user;
-}
-
-
-function createUser(headers, body) {
-	let user;
-
-	if (headers[HEADER_USERAGENT]) {
-		user = setUserAgentProperties(headers[HEADER_USERAGENT]);
-		if (headers[HEADER_CONTENT_LANGUAGE]) {
-			if (headers[HEADER_REFERER]) {
-				user = setEnvProperties(headers, user);
-				if (body) {
-					user = setSessionProperties(headers, user);
-				}
-				return user;
-			}
-			const error = {
-				description: 'No hay configuracion para la app. No existe Referer',
-				headers: JSON.stringify(headers)
-			};
-
-			throw (error);
-		}
-		const error = {
-			description: 'No hay configuracion para la app. No existe Lang',
-			headers: JSON.stringify(headers)
-
-		};
-
-		throw (error);
-	}
-	const error = {
-		description: 'No hay configuracion para la app. No existe User-Agent',
-		headers: JSON.stringify(headers)
-	};
-
-	throw (error);
-}
-
 /**
  * Evaluate a set of critera. Return true if ALL criteria is met.
  *
@@ -163,7 +23,7 @@ function evaluateCondition(user, condition) {
 
 	if (result && condition.value) {
 		return condition.value;
-	} else if (condition.value){
+	} else if (condition.value) {
 		return;
 	}
 
@@ -182,7 +42,6 @@ function calculate(user, featureConditions) {
 }
 
 function calculateConditions(user, values) {
-
 	return calculate(user, values);
 }
 
