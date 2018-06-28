@@ -85,6 +85,14 @@ function isPlatform(user, platform) {
 	return false;
 }
 
+function isApp(user, app) {
+	if (user !== null && user.app !== null && user.app !== undefined
+		&& app !== null && app !== undefined) {
+		return app.toUpperCase().includes(user.app.toUpperCase());
+	}
+	return false;
+}
+
 function isEnvironment(user, environment) {
 	if (user !== null && user.referer !== null && user.referer.env !== null && user.referer.env !== undefined
 		&& environment !== null && environment !== undefined) {
@@ -141,6 +149,7 @@ module.exports = {
 	minAppVersion, maxAppVersion,
 	minOsVersion, maxOsVersion,
 	isPlatform,
+	isApp,
 	isEnvironment,
 	isEmployee,
 	isLang,
