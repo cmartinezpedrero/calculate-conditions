@@ -35,10 +35,11 @@ function calculate(user, featureConditions) {
 		const conditions = featureConditions[i];
 		const aux = evaluateCondition(user, conditions);
 
-		if (aux !== undefined) {
+		if (aux !== undefined && aux.isActive !== false) {
 			return aux;
 		}
 	}
+	return { isActive: true }
 }
 
 function calculateConditions(user, values) {
