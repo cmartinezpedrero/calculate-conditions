@@ -85,6 +85,9 @@ Actual conditions:
 * isModel
 * beginDateTime
 * endDateTime
+* isUpdatableWebView,
+* isResolution,
+* isScreenDensity
 
 ### License
 
