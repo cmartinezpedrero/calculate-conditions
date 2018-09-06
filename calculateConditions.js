@@ -34,6 +34,7 @@ function calculate(user, featureConditions) {
 	for (let i = 0, l = featureConditions.length; i < l; i++) {
 		const conditions = featureConditions[i];
 		const aux = evaluateCondition(user, conditions);
+
 		if (aux !== undefined && aux.isActive !== false) {
 			return aux;
 		}
