@@ -199,6 +199,58 @@ function excludeGlobalSegments(user, globalSegments) {
 	return true;
 }
 
+function beginOnlyHour(user, beginTime) {
+	if (beginTime) {
+		const horaActual = new Date();
+		const beginTimeAux = (beginTime).split(":");
+		const horaInicio = new Date();
+		horaInicio.setHours(beginTimeAux[0], beginTimeAux[1]);
+
+		return horaActual.getHours() > horaInicio.getHours();
+	}
+	return false;
+}
+
+function endOnlyHour(user, endTime) {
+
+	if (endTime) {
+		const horaActual = new Date();
+		const endTimeAux = (endTime).split(":");
+		const horaFin = new Date();
+		horaFin.setHours(endTimeAux[0], endTimeAux[1]);
+
+		return horaActual.getHours() < horaFin.getHours();
+	}
+	return false;
+}
+
+function betatesters(user, betatestersList) {
+
+	if (user !== null && user.id !== null && user.id !== undefined
+		&& betatestersList !== null && betatestersList !== undefined) {
+		return betatestersList.toUpperCase().includes(user.id.toUpperCase());
+	}
+	return false;
+}
+
+function minPreviousAppVersion(user, minPreviousApp) {
+	// compareVersions('10.1.8', '10.0.4'); //  1
+	// compareVersions('10.0.1', '10.0.1'); //  0
+	// compareVersions('10.1.1', '10.2.2'); // -1
+	if (user !== null && user.previousAppVersion !== null && user.previousAppVersion !== undefined
+		&& minPreviousApp !== null && minPreviousApp !== undefined) {
+		try {
+			const compareResult = compareVersions(user.previousAppVersion, minPreviousApp);
+
+			if (compareResult >= 0) {
+				return true;
+			}
+		} catch (e) {
+			return false;
+		}
+	}
+	return false;
+}
 
 module.exports = {
 	minAppVersion, maxAppVersion,
@@ -214,6 +266,9 @@ module.exports = {
 	isUpdatableWebView,
 	isResolution,
 	isScreenDensity,
-	includeGlobalSegments, excludeGlobalSegments
+	includeGlobalSegments, excludeGlobalSegments,
+	beginOnlyHour, endOnlyHour,
+	betatesters,
+	minPreviousAppVersion
 };
 
