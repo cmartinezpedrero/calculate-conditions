@@ -89,7 +89,8 @@ function isPlatform(user, platform) {
 function isNotPlatform(user, platform) {
 	if (user !== null && user.platform !== null && user.platform !== undefined &&
 		platform !== null && platform !== undefined) {
-		return platform.toUpperCase().includes(user.platform.toUpperCase());
+		return !(platform.toUpperCase().includes(user.platform.toUpperCase()));
+
 	}
 	return false;
 }
