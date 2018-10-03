@@ -1,6 +1,7 @@
 const compareVersions = require('compare-versions');
 
 
+
 function minAppVersion(user, appVersion) {
 	// compareVersions('10.1.8', '10.0.4'); //  1
 	// compareVersions('10.0.1', '10.0.1'); //  0
@@ -180,17 +181,13 @@ function isScreenDensity(user, screenDensity) {
 }
 
 function includeGlobalSegments(user, globalSegments) {
-	if (user !== null && user.segments !== null && user.segments !== undefined &&
+	if (user !== null && user.segment !== null && user.segment !== undefined &&
 		globalSegments !== null && globalSegments !== undefined) {
 		const segments = globalSegments.split(',');
 
 		for (const property in segments) {
-			if (segments.hasOwnProperty(property)) {
-				for (const segment in user.segments) {
-					if (segments[property] === user.segments[segment].code) {
-						return true;
-					}
-				}
+			if (user.segment === segments[property]) {
+				return true;
 			}
 		}
 	}
@@ -203,12 +200,8 @@ function excludeGlobalSegments(user, globalSegments) {
 		const segments = globalSegments.split(',');
 
 		for (const property in segments) {
-			if (segments.hasOwnProperty(property)) {
-				for (const segment in user.segments) {
-					if (segments[property] === user.segments[segment].code) {
-						return false;
-					}
-				}
+			if (user.segment === segments[property]) {
+				return false;
 			}
 		}
 	}
@@ -218,9 +211,8 @@ function excludeGlobalSegments(user, globalSegments) {
 function beginOnlyHour(user, beginTime) {
 	if (beginTime) {
 		const horaActual = new Date();
-		const beginTimeAux = (beginTime).split(':');
+		const beginTimeAux = (beginTime).split(":");
 		const horaInicio = new Date();
-
 		horaInicio.setHours(beginTimeAux[0], beginTimeAux[1]);
 
 		return horaActual.getHours() > horaInicio.getHours();
@@ -229,11 +221,11 @@ function beginOnlyHour(user, beginTime) {
 }
 
 function endOnlyHour(user, endTime) {
+
 	if (endTime) {
 		const horaActual = new Date();
-		const endTimeAux = (endTime).split(':');
+		const endTimeAux = (endTime).split(":");
 		const horaFin = new Date();
-
 		horaFin.setHours(endTimeAux[0], endTimeAux[1]);
 
 		return horaActual.getHours() < horaFin.getHours();
@@ -242,11 +234,30 @@ function endOnlyHour(user, endTime) {
 }
 
 function betatesters(user, betatestersList) {
+
 	if (user !== null && user.id !== null && user.id !== undefined &&
 		betatestersList !== null && betatestersList !== undefined) {
-		betatestersList.users.toUpperCase();
+		betatestersList.users.toUpperCase()
 
 		return betatestersList.users.toUpperCase().includes(user.id);
+	}
+	return false;
+}
+
+function caudalimetro(user, caudalimetroProperties) {
+
+	if (user !== null && user.id !== null && user.id !== undefined &&
+		caudalimetroProperties !== null && caudalimetroProperties !== undefined) {
+
+		// Caudalimetro para session con dni, nie, cif, pan, token,
+		if (caudalimetroProperties.activate && caudalimetroProperties.endDocuments) {
+			for (let i = user.id.length-1; i >= 0; i--) {
+				let caracter = user.id.charAt(i);
+				if (!isNaN(caracter)) {
+					return caudalimetroProperties.endDocuments.includes(caracter)
+				}
+			}
+		}
 	}
 	return false;
 }
@@ -306,6 +317,7 @@ module.exports = {
 	beginOnlyHour,
 	endOnlyHour,
 	betatesters,
+	caudalimetro,
 	minPreviousAppVersion,
 	includeEconomicData
 };
