@@ -1,7 +1,6 @@
 const compareVersions = require('compare-versions');
 
 
-
 function minAppVersion(user, appVersion) {
 	// compareVersions('10.1.8', '10.0.4'); //  1
 	// compareVersions('10.0.1', '10.0.1'); //  0
@@ -181,13 +180,17 @@ function isScreenDensity(user, screenDensity) {
 }
 
 function includeGlobalSegments(user, globalSegments) {
-	if (user !== null && user.segment !== null && user.segment !== undefined &&
+	if (user !== null && user.segments !== null && user.segments !== undefined &&
 		globalSegments !== null && globalSegments !== undefined) {
 		const segments = globalSegments.split(',');
 
 		for (const property in segments) {
-			if (user.segment === segments[property]) {
-				return true;
+			if (segments.hasOwnProperty(property)) {
+				for (const segment in user.segments) {
+					if (segments[property] === user.segments[segment].code) {
+						return true;
+					}
+				}
 			}
 		}
 	}
@@ -200,8 +203,12 @@ function excludeGlobalSegments(user, globalSegments) {
 		const segments = globalSegments.split(',');
 
 		for (const property in segments) {
-			if (user.segment === segments[property]) {
-				return false;
+			if (segments.hasOwnProperty(property)) {
+				for (const segment in user.segments) {
+					if (segments[property] === user.segments[segment].code) {
+						return false;
+					}
+				}
 			}
 		}
 	}
@@ -211,8 +218,9 @@ function excludeGlobalSegments(user, globalSegments) {
 function beginOnlyHour(user, beginTime) {
 	if (beginTime) {
 		const horaActual = new Date();
-		const beginTimeAux = (beginTime).split(":");
+		const beginTimeAux = (beginTime).split(':');
 		const horaInicio = new Date();
+
 		horaInicio.setHours(beginTimeAux[0], beginTimeAux[1]);
 
 		return horaActual.getHours() > horaInicio.getHours();
@@ -221,11 +229,11 @@ function beginOnlyHour(user, beginTime) {
 }
 
 function endOnlyHour(user, endTime) {
-
 	if (endTime) {
 		const horaActual = new Date();
-		const endTimeAux = (endTime).split(":");
+		const endTimeAux = (endTime).split(':');
 		const horaFin = new Date();
+
 		horaFin.setHours(endTimeAux[0], endTimeAux[1]);
 
 		return horaActual.getHours() < horaFin.getHours();
@@ -234,10 +242,9 @@ function endOnlyHour(user, endTime) {
 }
 
 function betatesters(user, betatestersList) {
-
 	if (user !== null && user.id !== null && user.id !== undefined &&
 		betatestersList !== null && betatestersList !== undefined) {
-		betatestersList.users.toUpperCase()
+		betatestersList.users.toUpperCase();
 
 		return betatestersList.users.toUpperCase().includes(user.id);
 	}
