@@ -246,18 +246,10 @@ function betatesters(user, betatestersList) {
 
 function caudalimetro(user, caudalimetroProperties) {
 
-	if (user !== null && user.id !== null && user.id !== undefined &&
+	if (user !== null && user.endDoc !== null && user.endDoc !== undefined &&
 		caudalimetroProperties !== null && caudalimetroProperties !== undefined) {
 
-		// Caudalimetro para session con dni, nie, cif, pan, token,
-		if (caudalimetroProperties.activate && caudalimetroProperties.endDocuments) {
-			for (let i = user.id.length-1; i >= 0; i--) {
-				let caracter = user.id.charAt(i);
-				if (!isNaN(caracter)) {
-					return caudalimetroProperties.endDocuments.includes(caracter)
-				}
-			}
-		}
+		return caudalimetroProperties.endDocuments.includes(user.endDoc);
 	}
 	return false;
 }
