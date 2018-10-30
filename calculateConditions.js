@@ -22,7 +22,7 @@ function evaluateCondition(user, condition) {
 	});
 
 	if (result && condition.value) {
-		return condition.value;
+		return {value: condition.value};
 	} else if (result && condition.value === false) {
 		return false;
 	} else if (condition.value) {
@@ -41,10 +41,12 @@ function calculate(user, featureConditions) {
 		try {
 			const aux = evaluateCondition(user, conditions);
 
-			if (aux && aux.isActive !== false) {
+			if (aux && aux.isActive !== undefined && aux.isActive !== false) {
 				return aux;
 			} else if (aux === false) {
 				return false;
+			} else if (aux.value) {
+				return aux.value;
 			}
 		} catch (e) {
 			console.log('****************************');
