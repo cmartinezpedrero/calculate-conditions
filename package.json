@@ -1,6 +1,6 @@
 {
   "name": "calculate-conditions",
-  "version": "1.0.21",
+  "version": "1.0.23",
   "description": "Calculate conditions",
   "main": "calculateConditions.js",
   "directories": {

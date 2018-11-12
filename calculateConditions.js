@@ -22,7 +22,7 @@ function evaluateCondition(user, condition) {
 	});
 
 	if (result && condition.value) {
-		return {value: condition.value};
+		return { value: condition.value };
 	} else if (result && condition.value === false) {
 		return false;
 	} else if (condition.value) {
@@ -38,23 +38,15 @@ function calculate(user, featureConditions) {
 	for (let i = 0, l = featureConditions.length; i < l; i++) {
 		const conditions = featureConditions[i];
 
-		try {
-			const aux = evaluateCondition(user, conditions);
+		const resultCondition = evaluateCondition(user, conditions);
 
-			if (aux && aux.isActive !== undefined && aux.isActive !== false) {
-				return aux;
-			} else if (aux === false) {
-				return false;
-			} else if (aux.value) {
-				return aux.value;
+		if (resultCondition && resultCondition !== null && resultCondition !== undefined) {
+			if (resultCondition.isActive) {
+				return resultCondition.isActive;
+			} else if (resultCondition.value) {
+				return resultCondition.value;
 			}
-		} catch (e) {
-			console.log('****************************');
-			console.log('ERROR AL CALCULAR CONDITIONS');
-			console.log(e);
-			console.log(`USER:${ JSON.stringify(user)}`);
-			console.log(`CONDITIONS:${ JSON.stringify(conditions)}`);
-			console.log('****************************');
+			return false;
 		}
 	}
 	return {
